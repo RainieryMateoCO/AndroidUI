@@ -1,0 +1,46 @@
+apply plugin: 'com.android.application'
+
+android {
+
+    compileSdkVersion 23
+    buildToolsVersion "24.0.2"
+    defaultConfig {
+        applicationId "com.mateonet.mar.marandroidcliente"
+        minSdkVersion 20
+        targetSdkVersion 23
+        versionCode 150
+        versionName 'Mar Ventas 1.5'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+        }
+    }
+    productFlavors {
+    }
+
+    lintOptions{
+        checkReleaseBuilds false
+        abortOnError false
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.android.support:design:23.1.1'
+    compile 'com.android.support:support-v4:23.1.1'
+    compile files('libs/btPrintsdk1.jar')
+    compile files('libs/telpo_api.jar')
+    compile files('libs/telpo_core-3.1.0.jar')
+    compile files('libs/telpo_SmartCardLib.jar')
+    implementation 'com.android.volley:volley:1.1.0'
+    //Used for Demo Ui interface display, has nothing to do with function
+    implementation 'com.sunmi:sunmiui:1.1.27'
+    //zxing to generate barcode
+    implementation 'com.sunmi:printerlibrary:1.0.8'
+}
