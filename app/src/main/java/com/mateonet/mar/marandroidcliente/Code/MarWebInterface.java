@@ -1,25 +1,14 @@
 package com.mateonet.mar.marandroidcliente.Code;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.wifi.p2p.WifiP2pManager;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.OrientationHelper;
-import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.widget.Toast;
 
 import com.mateonet.mar.marandroidcliente.AboutActivity;
-import com.mateonet.mar.marandroidcliente.MainActivity;
-import com.mateonet.mar.marandroidcliente.R;
-import com.mateonet.mar.marandroidcliente.utils.BluetoothUtil;
-import com.mateonet.mar.marandroidcliente.utils.ESCUtil;
 import com.mateonet.mar.marandroidcliente.utils.SunmiPrintHelper;
 
 import java.util.ArrayList;
-import java.util.Timer;
 
 /**
  * Created by Domingo on 2/8/2016.
@@ -94,6 +83,8 @@ public class MarWebInterface {
         String theCompo="";
         boolean ImprimeLogo=false;
         ArrayList<PrintOption> theOptions=null;
+
+        shareTicket shareticket = new shareTicket();
         try{
             if (pOptions!=null) {
                 String[] theOpts=pOptions.split("~i~");
@@ -102,9 +93,11 @@ public class MarWebInterface {
                 if(theOpts.length > 1) {
                     for (int i = 0; i < theOpts.length; i++) {
                         String[] theComp = theOpts[i].split("~s~");
+
                         if (theComp != null || theComp.length > 0) {
                             if (theComp[0] != null || theComp[0] != "") {
                                 theCompo = theComp[0];
+
                                 if (theCompo.equalsIgnoreCase("Prn") == true) {
                                     if (theComp[1] != null && theComp[1] != "") {
                                         theSelectedPrinter = theComp[1];
@@ -120,6 +113,13 @@ public class MarWebInterface {
                                         if (theComp[1].equalsIgnoreCase("true") || theComp[1].equalsIgnoreCase("false")) {
                                             ImprimeLogo = true;
                                         }
+                                    }
+                                }
+                                if (theCompo.equalsIgnoreCase("PrintWhatsapp")) {
+                                    // TODO: a conditional about qr code
+                                    if (theComp[1].equalsIgnoreCase("TRUE")) {
+                                        shareticket.shareTicketGenerated(mContext, theContent, theQRCode);
+                                        return;
                                     }
                                 }
                             }

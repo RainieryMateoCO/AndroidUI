@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -23,13 +24,13 @@ import com.mateonet.mar.marandroidcliente.Code.MarSettings;
 import com.mateonet.mar.marandroidcliente.Code.MarWebInterface;
 import com.mateonet.mar.marandroidcliente.Code.MarWebViewClient;
 import com.mateonet.mar.marandroidcliente.Code.PrintInterface;
+import com.mateonet.mar.marandroidcliente.Code.Reciever;
 import com.mateonet.mar.marandroidcliente.utils.SunmiPrintHelper;
-
-import android.net.Uri;
 
 public class MainActivity extends AppCompatActivity {
     private Context mContext;
     private MarWebInterface mWebInterface;
+    private Reciever reciever;
     private PrintInterface mPrnInterface;
     public static final int PHONE_STATUS_PERMISSION_REQUEST = 1;
     public static final int GPS_PERMISSION_REQUEST = 2;
@@ -72,25 +73,23 @@ public class MainActivity extends AppCompatActivity {
         mPrnInterface=new PrintInterface(this);
         mWebInterface=new MarWebInterface(mContext,theBrowser,mPrnInterface);
         theBrowser.addJavascriptInterface(mWebInterface, "DroidMAR");
-        theBrowser.addJavascriptInterface(new JavaScriptShareInterface(), "AndroidShareHandler");
+        theBrowser.addJavascriptInterface(new JavascriptDownloadInterface(), "AndroidDownload");
+
     }
 
     private void init(){
+        //Download log register
+        reciever = new Reciever(MainActivity.this);
+        reciever.register(reciever);
+
         SunmiPrintHelper.getInstance().initSunmiPrinterService(this);
     }
-    public class JavaScriptShareInterface {
+
+    public class JavascriptDownloadInterface {
+        //Javascript interface to download the apk version
         @JavascriptInterface
-        public void SendToWhatsApp(String msg) {
-            // your share action
-            System.out.println(msg);
-//NOTE : please use with country code first 2digits without plus signed
-            try {
-                String mobile = "";
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://api.whatsapp.com/send?phone=" + mobile + "&text=" + msg)));
-            }catch (Exception e){
-                //whatsapp app not install
-                System.out.println("whatsapp app not install");
-            }
+        public void DownloadVersion(String url) {
+            reciever.Download(url);
         }
     }
 
@@ -126,6 +125,13 @@ public class MainActivity extends AppCompatActivity {
             theBrowser.loadUrl(MarSettings.getServerURL() + "/AndroidUI/Out/SignIn");
         }
 
+        reciever.register(reciever);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        reciever.wipeRegister(reciever);
     }
 
     @Override

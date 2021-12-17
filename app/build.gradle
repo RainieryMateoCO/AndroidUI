@@ -26,6 +26,23 @@ android {
         checkReleaseBuilds false
         abortOnError false
     }
+    sourceSets {
+        main {
+            assets {
+                srcDirs 'src/main/assets'
+            }
+        }
+        debug {
+            assets {
+                srcDirs 'src/debug/assets'
+            }
+        }
+        release {
+            assets {
+                srcDirs 'src/release/assets'
+            }
+        }
+    }
 }
 
 dependencies {
