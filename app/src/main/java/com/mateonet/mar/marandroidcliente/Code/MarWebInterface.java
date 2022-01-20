@@ -116,7 +116,6 @@ public class MarWebInterface {
                                     }
                                 }
                                 if (theCompo.equalsIgnoreCase("PrintWhatsapp")) {
-                                    // TODO: a conditional about qr code
                                     if (theComp[1].equalsIgnoreCase("TRUE")) {
                                         shareticket.shareTicketGenerated(mContext, theContent, theQRCode);
                                         return;
@@ -192,8 +191,6 @@ public class MarWebInterface {
         } else {
             alert("Impresora configurada no es valida.");
         }
-
-
 
     }
 

@@ -45,6 +45,9 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class shareTicket {
+    String outputFile = "ticketMAR.pdf";
+    String outputSubDirectory = "MARTICKETS/";
+
     private void ticketGenerator(Context context, ArrayList<PrintContentLine> theContent, String theQRCode) {
         String textOption = "", textBase = "";
         Integer heightIncremental = 0;
@@ -65,16 +68,12 @@ public class shareTicket {
 
         // Drawing logo on canvas
              try{
-                File filepath = Environment.getExternalStorageDirectory();
-                File dir = new File(filepath.getAbsolutePath(),"/Pictures/logo.png");
-
+                File dir = new File(Environment.getExternalStorageDirectory(), "Notifications/logo.png");
                 if(dir.exists()){
                     Bitmap logoBitmap = BitmapFactory.decodeFile(dir.getAbsolutePath());
                     Bitmap scaleLogo = Bitmap.createScaledBitmap(logoBitmap, 150, 150, false);
                     canvas.drawBitmap(scaleLogo, 170, bodyBaseDY-50, paint);
                     bodyBaseDY = bodyBaseDY + 135;
-                }else{
-
                 }
 
             }catch (Exception e){
@@ -127,7 +126,7 @@ public class shareTicket {
         pdfDocument.finishPage(myPage);
 
         //File creation
-        File file = new File(Environment.getExternalStorageDirectory(), "ticketMAR.pdf");
+        File file = new File(Environment.getExternalStorageDirectory(), "Notifications/ticketMAR.pdf");
 
         //End processor
         pdfDocument.writeTo(new FileOutputStream(file));
@@ -143,16 +142,16 @@ public class shareTicket {
     public void shareTicketGenerated(Context context, ArrayList<PrintContentLine> theContent, String theQRCode) {
         try{
             ticketGenerator(context, theContent, theQRCode);
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("application/pdf");
+
+            File pdfFile = new File(Environment.getExternalStorageDirectory(), "Notifications/ticketMAR.pdf");
+            Uri uri = Uri.fromFile(pdfFile);
+            intent.putExtra(Intent.EXTRA_STREAM, uri);
+            context.startActivity(Intent.createChooser(intent, "Compartiendo ticket a imprimir.").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("application/pdf");
-
-        File pdfFile = new File(Environment.getExternalStorageDirectory() + "/ticketMAR.pdf");
-        Uri uri = Uri.fromFile(pdfFile);
-        intent.putExtra(Intent.EXTRA_STREAM, uri);
-        context.startActivity(Intent.createChooser(intent, "Compartiendo ticket a imprimir."));
     }
 
     //QR code Encoder
