@@ -76,7 +76,7 @@ public class AboutActivity extends AppCompatActivity {
         PermisosAlmacenamiento();
 
         /**Comprobando si el dispositivo contiene el logo*/
-        File dir = new File(Environment.getExternalStorageDirectory(), "Notifications/logo.png");
+        File dir = new File(Environment.getExternalStorageDirectory(), "ticketsMAR/logo.png");
         if(dir.exists()){
             enlaceLogo.setText("Actualizar Logo");
 
@@ -185,7 +185,7 @@ public class AboutActivity extends AppCompatActivity {
         boolean LogoExistente=false;
 
         try {
-            File dir = new File(Environment.getExternalStorageDirectory(), "Notifications/logo.png");
+            File dir = new File(Environment.getExternalStorageDirectory(), "ticketsMAR/logo.png");
             if (dir.exists()) {
                 LogoExistente = true;
             } else {
@@ -221,7 +221,7 @@ public class AboutActivity extends AppCompatActivity {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inTargetDensity = 200;
             options.inDensity = 200;
-            File dir = new File(Environment.getExternalStorageDirectory(), "Notifications/logo.png");
+            File dir = new File(Environment.getExternalStorageDirectory(), "ticketsMAR/logo.png");
             Bitmap bitmap = BitmapFactory.decodeFile(dir.getAbsolutePath());
 
             if(bitmap != null){
@@ -249,7 +249,7 @@ public class AboutActivity extends AppCompatActivity {
             @Override
             public void onResponse(Bitmap response) {
                 if(response != null){
-                    File dir = new File(Environment.getExternalStorageDirectory(), "Notifications/");
+                    File dir = new File(Environment.getExternalStorageDirectory(), "ticketsMAR/");
                     dir.mkdir();
                     dir.exists();
                     File ImageSave = new File(dir,"logo.png");

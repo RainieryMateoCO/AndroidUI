@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -26,6 +27,8 @@ import com.mateonet.mar.marandroidcliente.Code.MarWebViewClient;
 import com.mateonet.mar.marandroidcliente.Code.PrintInterface;
 import com.mateonet.mar.marandroidcliente.Code.Reciever;
 import com.mateonet.mar.marandroidcliente.utils.SunmiPrintHelper;
+
+import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
     private Context mContext;
@@ -75,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
         theBrowser.addJavascriptInterface(mWebInterface, "DroidMAR");
         theBrowser.addJavascriptInterface(new JavascriptDownloadInterface(), "AndroidDownload");
 
+        File ticketsDirectory = new File(Environment.getExternalStorageDirectory(), "ticketsMAR");
+        ticketsDirectory.mkdirs();
     }
 
     private void init(){

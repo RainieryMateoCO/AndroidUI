@@ -46,7 +46,6 @@ import java.util.ArrayList;
 
 public class shareTicket {
     String outputFile = "ticketMAR.pdf";
-    String outputSubDirectory = "MARTICKETS/";
 
     private void ticketGenerator(Context context, ArrayList<PrintContentLine> theContent, String theQRCode) {
         String textOption = "", textBase = "";
@@ -68,7 +67,7 @@ public class shareTicket {
 
         // Drawing logo on canvas
              try{
-                File dir = new File(Environment.getExternalStorageDirectory(), "Notifications/logo.png");
+                File dir = new File(Environment.getExternalStorageDirectory(), "ticketsMAR/logo.png");
                 if(dir.exists()){
                     Bitmap logoBitmap = BitmapFactory.decodeFile(dir.getAbsolutePath());
                     Bitmap scaleLogo = Bitmap.createScaledBitmap(logoBitmap, 150, 150, false);
@@ -126,7 +125,7 @@ public class shareTicket {
         pdfDocument.finishPage(myPage);
 
         //File creation
-        File file = new File(Environment.getExternalStorageDirectory(), "Notifications/ticketMAR.pdf");
+        File file = new File(Environment.getExternalStorageDirectory(), "ticketsMAR/ticketMAR.pdf");
 
         //End processor
         pdfDocument.writeTo(new FileOutputStream(file));
@@ -145,10 +144,10 @@ public class shareTicket {
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("application/pdf");
 
-            File pdfFile = new File(Environment.getExternalStorageDirectory(), "Notifications/ticketMAR.pdf");
+            File pdfFile = new File(Environment.getExternalStorageDirectory(), "ticketsMAR/ticketMAR.pdf");
             Uri uri = Uri.fromFile(pdfFile);
             intent.putExtra(Intent.EXTRA_STREAM, uri);
-            context.startActivity(Intent.createChooser(intent, "Compartiendo ticket a imprimir.").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+            context.startActivity(Intent.createChooser(intent, "Compartiendo ticket a imprimir.")); //.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         } catch (Exception e) {
             e.printStackTrace();
         }
