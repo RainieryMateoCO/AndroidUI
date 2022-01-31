@@ -6,7 +6,9 @@
         android:required="false" />
     <uses-feature
         android:name="android.hardware.nfc"
-        android:required="false"/>
+        android:required="false"
+        />
+    <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="11" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -52,5 +54,16 @@
             <meta-data android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mateonet.mar.marandroidcliente.MainActivity" />
         </activity>
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.mateonet.mar.marandroidcliente"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_path" />
+
+        </provider>
     </application>
+
 </manifest>

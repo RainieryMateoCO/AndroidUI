@@ -17,10 +17,13 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
+import android.os.Binder;
+import android.os.Build;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -35,6 +38,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.common.StringUtils;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.encoder.QRCode;
+import com.mateonet.mar.marandroidcliente.BuildConfig;
 import com.mateonet.mar.marandroidcliente.MainActivity;
 import com.mateonet.mar.marandroidcliente.R;
 
@@ -45,8 +49,6 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class shareTicket {
-    String outputFile = "ticketMAR.pdf";
-
     private void ticketGenerator(Context context, ArrayList<PrintContentLine> theContent, String theQRCode) {
         String textOption = "", textBase = "";
         Integer heightIncremental = 0;
@@ -67,7 +69,7 @@ public class shareTicket {
 
         // Drawing logo on canvas
              try{
-                File dir = new File(Environment.getExternalStorageDirectory(), "ticketsMAR/logo.png");
+                File dir = new File(Environment.getExternalStorageDirectory(), "tickets/logo.png");
                 if(dir.exists()){
                     Bitmap logoBitmap = BitmapFactory.decodeFile(dir.getAbsolutePath());
                     Bitmap scaleLogo = Bitmap.createScaledBitmap(logoBitmap, 150, 150, false);
@@ -125,7 +127,7 @@ public class shareTicket {
         pdfDocument.finishPage(myPage);
 
         //File creation
-        File file = new File(Environment.getExternalStorageDirectory(), "ticketsMAR/ticketMAR.pdf");
+        File file = new File(Environment.getExternalStorageDirectory(), "tickets/ticketMAR.pdf");
 
         //End processor
         pdfDocument.writeTo(new FileOutputStream(file));
@@ -140,17 +142,86 @@ public class shareTicket {
 
     public void shareTicketGenerated(Context context, ArrayList<PrintContentLine> theContent, String theQRCode) {
         try{
+            int androidVersion = Build.VERSION.SDK_INT;
             ticketGenerator(context, theContent, theQRCode);
-            Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.setType("application/pdf");
 
-            File pdfFile = new File(Environment.getExternalStorageDirectory(), "ticketsMAR/ticketMAR.pdf");
-            Uri uri = Uri.fromFile(pdfFile);
-            intent.putExtra(Intent.EXTRA_STREAM, uri);
-            context.startActivity(Intent.createChooser(intent, "Compartiendo ticket a imprimir.")); //.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        } catch (Exception e) {
+            switch(androidVersion){
+                case 24:
+                case 25:
+                    // Android version 7.1 - 7.1.1
+                    shareWithAndroid7(context);
+                    break;
+                case 26:
+                    // Android version 8
+                    shareWithAndroid7(context);
+                    break;
+                case 27:
+                    // Android version 8.1
+                    shareWithAndroid7(context);
+                    break;
+                case 28:
+                    // Android 9
+                    shareWithAndroid9(context);
+                    break;
+                case 29:
+                case 30:
+                    // Android 10 and 11
+                    shareWithAndroid11And10(context);
+                    break;
+                default:
+                    Toast.makeText(context, "No disponible en la versión "+androidVersion+" comuniquese con nuestro servicio al cliente.", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+      } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    private void shareWithAndroid7(Context context){
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("application/pdf");
+
+        File pdfFile = new File(Environment.getExternalStorageDirectory(), "tickets/ticketMAR.pdf");
+        Uri uri = Uri.fromFile(pdfFile);
+        intent.putExtra(Intent.EXTRA_STREAM, uri);
+        context.startActivity(Intent.createChooser(intent, "Compartiendo ticket a imprimir.").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+    }
+
+    private void shareWithAndroid8(Context context){
+
+    }
+
+    private void shareWithAndroid9(Context context){
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("application/pdf");
+
+        File pdfFile = new File(Environment.getExternalStorageDirectory(), "tickets/ticketMAR.pdf");
+        Uri uri = Uri.fromFile(pdfFile);
+        intent.putExtra(Intent.EXTRA_STREAM, uri);
+        context.startActivity(Intent.createChooser(intent, "Compartiendo ticket a imprimir.").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+    }
+
+    private void shareWithAndroid11And10(Context context){
+        File file = new File(Environment.getExternalStorageDirectory(), "tickets/ticketMAR.pdf");
+
+        Uri uri = FileProvider.getUriForFile(context, "com.mateonet.mar.marandroidcliente", file);
+
+        Intent intent = new Intent();
+
+        intent.setDataAndType(uri, context.getContentResolver().getType(uri));
+        int uid = Binder.getCallingUid();
+        String callingPackage = context.getPackageManager().getNameForUid(uid);
+
+        context.getApplicationContext().grantUriPermission(callingPackage, uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        intent.setAction(Intent.ACTION_SEND);
+        intent.setType("application/pdf");
+
+        intent.putExtra(Intent.EXTRA_STREAM, uri);
+
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
     }
 
     //QR code Encoder

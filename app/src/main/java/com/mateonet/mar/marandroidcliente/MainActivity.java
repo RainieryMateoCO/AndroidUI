@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         theBrowser.addJavascriptInterface(mWebInterface, "DroidMAR");
         theBrowser.addJavascriptInterface(new JavascriptDownloadInterface(), "AndroidDownload");
 
-        File ticketsDirectory = new File(Environment.getExternalStorageDirectory(), "ticketsMAR");
+        File ticketsDirectory = new File(Environment.getExternalStorageDirectory(), "tickets");
         ticketsDirectory.mkdirs();
     }
 
